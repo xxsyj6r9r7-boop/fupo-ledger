@@ -1,0 +1,26 @@
+{
+  "name": "富婆专来记账",
+  "short_name": "富婆记账",
+  "description": "简约个人支出记账",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7f8",
+  "theme_color": "#ec4899",
+  "orientation": "portrait-primary",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%23ec4899' width='512' height='512' rx='96'/%3E%3Ctext x='256' y='350' font-size='220' fill='white' text-anchor='middle' font-family='system-ui,sans-serif'%3E记%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%23ec4899' width='192' height='192' rx='36'/%3E%3Ctext x='96' y='132' font-size='82' fill='white' text-anchor='middle' font-family='system-ui,sans-serif'%3E记%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
