@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fupo-ledger-v1';
+const CACHE_NAME = 'fupo-ledger-v2';
 const ASSETS = ['./', './index.html', './style.css', './script.js', './manifest.json'];
 
 self.addEventListener('install', (event) => {

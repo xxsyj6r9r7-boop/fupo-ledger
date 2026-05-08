@@ -3,6 +3,9 @@
 
   const STORAGE_KEY = 'fupo-ledger-records-v1';
 
+  /** 参与「每日平均支出」的四类（当月合计按天均摊） */
+  const AVG_CATEGORY_IDS = ['food', 'snack', 'comm', 'transport'];
+
   const CATEGORIES = [
     { id: 'food', name: '餐食/果蔬', icon: '🍱' },
     { id: 'snack', name: '零食', icon: '🍪' },
@@ -106,7 +109,8 @@
 
   const entryDate = el('entry-date');
   const categoryGrid = el('category-grid');
-  const entryForm = el('entry-form');
+  const entryModal = el('entry-modal');
+  const entryModalBackdrop = el('entry-modal-backdrop');
   const selectedCatLabel = el('selected-cat-label');
   const amountInput = el('amount-input');
   const noteInput = el('note-input');
@@ -118,6 +122,7 @@
   const sumMonth = el('sum-month');
   const sumLastMonth = el('sum-last-month');
   const sumYear = el('sum-year');
+  const avgDailyFour = el('avg-daily-four');
 
   const filterYear = el('filter-year');
   const filterMonth = el('filter-month');
@@ -125,6 +130,22 @@
   const recordsGroups = el('records-groups');
   const recordsEmpty = el('records-empty');
   const recordsCount = el('records-count');
+
+  function openEntryModal() {
+    entryModal.classList.remove('hidden');
+    entryModal.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('modal-open');
+  }
+
+  function closeEntryModal() {
+    entryModal.classList.add('hidden');
+    entryModal.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('modal-open');
+    selectedCategory = null;
+    amountInput.value = '';
+    noteInput.value = '';
+    renderCategoryGrid();
+  }
 
   function renderCategoryGrid() {
     categoryGrid.innerHTML = '';
@@ -141,10 +162,12 @@
       `;
       btn.addEventListener('click', () => {
         selectedCategory = c.id;
-        entryForm.classList.remove('hidden');
         selectedCatLabel.textContent = `${c.icon} ${c.name}`;
+        amountInput.value = '';
+        noteInput.value = '';
         renderCategoryGrid();
-        amountInput.focus();
+        openEntryModal();
+        setTimeout(() => amountInput.focus(), 50);
       });
       categoryGrid.appendChild(btn);
     });
@@ -168,6 +191,14 @@
 
     const ytd = sumBy(records, (r) => isYearToDate(r.date));
     sumYear.textContent = formatMoney(ytd);
+
+    const now = wallNow();
+    const daysPassed = Math.max(1, now.getDate());
+    const fourSum = sumBy(
+      records,
+      (r) => AVG_CATEGORY_IDS.includes(r.category) && isInCurrentCalendarMonth(r.date)
+    );
+    avgDailyFour.textContent = formatMoney(fourSum / daysPassed);
   }
 
   function renderDayRecords() {
@@ -280,15 +311,22 @@
       createdAt: Date.now(),
     });
     saveRecords(records);
-    amountInput.value = '';
-    noteInput.value = '';
+    closeEntryModal();
     refreshAll();
   });
 
   el('clear-selection').addEventListener('click', () => {
-    selectedCategory = null;
-    entryForm.classList.add('hidden');
-    renderCategoryGrid();
+    closeEntryModal();
+  });
+
+  entryModalBackdrop.addEventListener('click', () => {
+    closeEntryModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !entryModal.classList.contains('hidden')) {
+      closeEntryModal();
+    }
   });
 
   entryDate.addEventListener('change', () => {
@@ -310,7 +348,10 @@
     el('page-ledger').hidden = name !== 'ledger';
     el('page-records').classList.toggle('active', name === 'records');
     el('page-records').hidden = name !== 'records';
-    if (name === 'records') populateFilters();
+    if (name === 'records') {
+      closeEntryModal();
+      populateFilters();
+    }
     renderRecordsPage();
   }
 

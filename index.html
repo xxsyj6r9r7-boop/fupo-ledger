@@ -31,25 +31,19 @@
     <main class="pages">
       <!-- 记账页 -->
       <section id="page-ledger" class="page active" aria-label="记账">
-        <p class="hint">点选分类后输入金额与备注，确定后累加到账本。</p>
+        <p class="hint">点选分类后会弹出窗口输入金额与备注，确定后累加到账本。</p>
+
+        <div class="avg-card" aria-live="polite">
+          <div class="avg-card-head">
+            <span class="avg-card-title">每日平均支出</span>
+            <span class="avg-card-value" id="avg-daily-four">0.00</span>
+          </div>
+          <p class="avg-card-desc">
+            统计当月「餐食/果蔬、零食、通讯、交通」四项合计，按本月已过天数均摊（元/天）。
+          </p>
+        </div>
 
         <div id="category-grid" class="category-grid"></div>
-
-        <div id="entry-form" class="entry-form hidden">
-          <div class="entry-form-head">
-            <span id="selected-cat-label"></span>
-            <button type="button" id="clear-selection" class="link-btn">取消选择</button>
-          </div>
-          <label class="field">
-            <span>金额（元）</span>
-            <input type="number" id="amount-input" inputmode="decimal" min="0" step="0.01" placeholder="0.00" />
-          </label>
-          <label class="field">
-            <span>备注</span>
-            <input type="text" id="note-input" maxlength="120" placeholder="可选" />
-          </label>
-          <button type="button" id="confirm-entry" class="btn primary">确定入账</button>
-        </div>
 
         <div class="day-records-wrap">
           <h2 class="subheading">当日记录 <span id="day-records-date"></span></h2>
@@ -90,6 +84,24 @@
         <p id="records-empty" class="empty-tip hidden">暂无符合条件的记录。</p>
       </section>
     </main>
+  </div>
+
+  <div id="entry-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="entry-modal-heading" aria-hidden="true">
+    <button type="button" class="modal-backdrop" id="entry-modal-backdrop" tabindex="-1" aria-label="关闭弹窗"></button>
+    <div class="modal-panel">
+      <h2 id="entry-modal-heading" class="modal-heading">记一笔</h2>
+      <p id="selected-cat-label" class="modal-cat"></p>
+      <label class="field">
+        <span>金额（元）</span>
+        <input type="number" id="amount-input" inputmode="decimal" min="0" step="0.01" placeholder="0.00" />
+      </label>
+      <label class="field">
+        <span>备注</span>
+        <input type="text" id="note-input" maxlength="120" placeholder="可选" />
+      </label>
+      <button type="button" id="confirm-entry" class="btn primary">确定入账</button>
+      <button type="button" id="clear-selection" class="btn ghost">取消</button>
+    </div>
   </div>
 
   <script src="./script.js" defer></script>
